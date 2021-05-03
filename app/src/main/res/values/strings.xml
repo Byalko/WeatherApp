@@ -2,4 +2,6 @@
     <string name="app_name">WeatherApp</string>
 
     <string name="location">Location!</string>
+    <string name="bottom_nav_today">Today</string>
+    <string name="bottom_nav_forecast">Forecast</string>
 </resources>
