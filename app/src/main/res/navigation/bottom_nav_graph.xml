@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/todayFragment"
-        android:name="com.example.weatherapp.TodayFragment"
+        android:name="com.example.weatherapp.ui.today.TodayFragment"
         android:label="today_fragment"
         tools:layout="@layout/today_fragment" />
     <fragment
         android:id="@+id/forecastFragment"
-        android:name="com.example.weatherapp.ForecastFragment"
+        android:name="com.example.weatherapp.ui.forecast.ForecastFragment"
         android:label="forecast_fragment"
         tools:layout="@layout/forecast_fragment" />
 </navigation>

@@ -1,4 +1,4 @@
-package com.example.weatherapp
+package com.example.weatherapp.ui.today
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -7,8 +7,9 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
-import com.example.weatherapp.LocationUtils.PERMISSION_LOCATION_REQUEST_CODE
-import com.example.weatherapp.LocationUtils.hasLocationPermission
+import com.example.weatherapp.R
+import com.example.weatherapp.di.LocationUtils.PERMISSION_LOCATION_REQUEST_CODE
+import com.example.weatherapp.di.LocationUtils.hasLocationPermission
 import com.example.weatherapp.databinding.TodayFragmentBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
