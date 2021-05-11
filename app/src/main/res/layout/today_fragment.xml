@@ -4,15 +4,190 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.today.TodayFragment">
+    android:background="@color/White">
 
-    <Button
-        android:id="@+id/btn_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/location"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/toolBar_today"
+                android:textColor="@color/Black"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <View
+        android:id="@+id/line_after_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@drawable/line_after_toolbar"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        />
+
+    <ImageView
+        android:id="@+id/icon_wheat"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line_after_toolbar"
+        android:contentDescription="@string/MainWeatherIcon" />
+
+    <TextView
+        android:id="@+id/city"
+        style="@style/MainInfo"
+        app:layout_constraintTop_toBottomOf="@id/icon_wheat"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/Black"
+        android:textSize="19sp" />
+
+    <TextView
+        android:id="@+id/gradusy"
+        style="@style/MainInfo"
+        android:textStyle="normal"
+        app:layout_constraintTop_toBottomOf="@id/city"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/Blue"
+        android:textSize="27sp" />
+
+    <View
+        android:id="@+id/line1"
+        style="@style/line"
+        app:layout_constraintTop_toBottomOf="@id/gradusy"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_rainfall"
+        style="@style/icon_today"
+        android:layout_marginEnd="40dp"
+        android:src="@mipmap/ic_action_name"
+        app:layout_constraintRight_toRightOf="@id/ic_water"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line1"
+        />
+
+    <TextView
+        android:id="@+id/txt_rainfall"
+        style="@style/txt_today"
+        android:layout_marginEnd="40dp"
+        app:layout_constraintRight_toRightOf="@id/ic_water"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ic_rainfall" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_water"
+        style="@style/icon_today"
+        android:src="@drawable/ic_water"
+        app:layout_constraintRight_toRightOf="@id/ic_degree"
+        app:layout_constraintLeft_toLeftOf="@id/ic_rainfall"
+        app:layout_constraintTop_toBottomOf="@id/line1"
+        />
+    <TextView
+        android:id="@+id/txt_water"
+        android:layout_width="71dp"
+        style="@style/txt_today"
+        app:layout_constraintLeft_toLeftOf="@id/ic_rainfall"
+        app:layout_constraintRight_toRightOf="@id/ic_degree"
+        app:layout_constraintTop_toBottomOf="@+id/ic_water" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_degree"
+        style="@style/icon_today"
+        android:src="@drawable/ic_degree"
+        android:layout_marginStart="40dp"
+        app:layout_constraintLeft_toLeftOf="@id/ic_water"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line1"
+        />
+    <TextView
+        android:id="@+id/txt_degree"
+        android:layout_width="100dp"
+        style="@style/txt_today"
+        android:layout_marginStart="40dp"
+        app:layout_constraintLeft_toLeftOf="@id/ic_water"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ic_water" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_wind"
+        style="@style/icon_today"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/ic_wind"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/ic_compass"
+        app:layout_constraintTop_toBottomOf="@id/ic_water"
+        />
+    <TextView
+        android:id="@+id/txt_wind"
+        android:layout_width="81dp"
+        style="@style/txt_today"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/ic_compass"
+        app:layout_constraintTop_toBottomOf="@+id/ic_wind" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ic_compass"
+        style="@style/icon_today"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/ic_compass"
+        app:layout_constraintLeft_toLeftOf="@id/ic_wind"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ic_water"
+        />
+    <TextView
+        android:id="@+id/txt_compass"
+        android:layout_width="51dp"
+        style="@style/txt_today"
+        app:layout_constraintLeft_toLeftOf="@id/ic_wind"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ic_compass" />
+
+    <View
+        android:id="@+id/line2"
+        style="@style/line"
+        app:layout_constraintTop_toBottomOf="@id/txt_wind"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/share_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/today_share"
+        android:textColor="@color/orange"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line2" />
+
+<!--
+    app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
+-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

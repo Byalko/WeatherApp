@@ -11,6 +11,7 @@ import com.vmadalin.easypermissions.EasyPermissions
 object LocationUtils {
 
     const val PERMISSION_LOCATION_REQUEST_CODE = 1
+    const val DEFAULT_IMG = "http://openweathermap.org/img/wn/"
 
     fun hasLocationPermission(context: Context) =
         EasyPermissions.hasPermissions(

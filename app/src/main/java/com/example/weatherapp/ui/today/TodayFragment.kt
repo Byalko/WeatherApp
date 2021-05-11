@@ -12,8 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.TodayFragmentBinding
+import com.example.weatherapp.di.LocationUtils
 import com.example.weatherapp.di.LocationUtils.isOnline
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
@@ -27,6 +29,7 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -36,12 +39,41 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
 
         Log.d("Location", "OnCreate")
 
-        binding.btnLocation.setOnClickListener {
+        binding.shareButton.setOnClickListener {
             if (isOnline(requireActivity(), requireContext())) {
                 checkGPS()
+            } else {
+                Toast.makeText(requireContext(),"Нет сети", Toast.LENGTH_SHORT).show()
             }
         }
 
+        viewModel.result.observe(viewLifecycleOwner,{
+            with(binding){
+
+                Glide.with(requireContext()).load(LocationUtils.DEFAULT_IMG+it.list[0]
+                    .weather[0].icon + "@2x.png").centerCrop().into(iconWheat)
+                val strCity = it.city.name+", "+ it.city.country
+                city.text = strCity
+                txtCompass.text = direction(it.list[0].wind.deg)
+
+                gradusy.text="${it.list[0].main.temp.toInt()} °C | ${it.list[0].weather[0].main}"
+                txtRainfall.text="${it.list[0].main.humidity}%"
+                txtDegree.text="${it.list[0].main.pressure} hPa"
+                txtWind.text="${((it.list[0].wind.speed)*3.6).toInt()} km/h"
+            }
+        })
+    }
+
+    private fun direction(deg: Int) : String {
+        if(deg in 0..23 || deg in 339..360 )  return "N"
+        if(deg in 24..68) return "NE"
+        if(deg in 69..113) return "E"
+        if(deg in 114..158) return "SE"
+        if(deg in 158..203) return "S"
+        if(deg in 204..248) return "SW"
+        if(deg in 249..293) return "W"
+        if(deg in 294..338) return "NW"
+        else return "WWWW"
     }
 
     @SuppressLint("MissingPermission")

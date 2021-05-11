@@ -4,4 +4,9 @@
     <string name="location">Location!</string>
     <string name="bottom_nav_today">Today</string>
     <string name="bottom_nav_forecast">Forecast</string>
+
+    <string name="today_share">Share</string>
+    <string name="toolBar_today">Today</string>
+    <string name="MainWeatherIcon">MainWeatherIcon</string>
+
 </resources>
