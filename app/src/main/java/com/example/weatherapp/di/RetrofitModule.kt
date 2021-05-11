@@ -28,7 +28,7 @@ object RetrofitModule {
         val request = chain.request().newBuilder()
         val originalHttpUrl = chain.request().url
         val newUrl = originalHttpUrl.newBuilder().addQueryParameter(
-            "api_key", "0693b17c06c6556d4d5186dfad80a064"
+            "appid", "67901cf7da944ab97cf90b4656ad27b4"
         ).build()
         request.url(newUrl)
         return chain.proceed(request.build())
