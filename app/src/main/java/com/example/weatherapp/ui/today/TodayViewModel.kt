@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.test_diplom.util.Resource
+import com.example.weatherapp.util.Resource
 import com.example.weatherapp.data.RecyclerViewSection
 import com.example.weatherapp.data.model.WeatherList
 import com.example.weatherapp.data.model.WeatherModel
