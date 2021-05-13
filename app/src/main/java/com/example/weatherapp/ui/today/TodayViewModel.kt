@@ -1,6 +1,5 @@
 package com.example.weatherapp.ui.today
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,24 +24,23 @@ class TodayViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var _result = MutableLiveData<WeatherModel>()
-    val result : LiveData<WeatherModel> = _result
+    val result: LiveData<WeatherModel> = _result
 
     private var _list = MutableLiveData<List<RecyclerViewSection>>()
-    val list : LiveData<List<RecyclerViewSection>> = _list
+    val list: LiveData<List<RecyclerViewSection>> = _list
 
     private val _result1 = MutableStateFlow<AllEvent>(AllEvent.Empty)
-    val result1 : StateFlow<AllEvent> = _result1
+    val result1: StateFlow<AllEvent> = _result1
 
-    fun getData(lat:Double,lon:Double) {
+    fun getData(lat: Double, lon: Double) {
 
         viewModelScope.launch {
             _result1.value = AllEvent.Loading
-            val response = weatherRepository.getFiveWeather(lat, lon)
-            when(response){
+            when (val response = weatherRepository.getFiveWeather(lat, lon)) {
                 is Resource.Success -> {
                     _result1.value = AllEvent.Success(response.data!!)
-                    _result.postValue(response.data!!)
-                    withContext(Dispatchers.IO) {_list.postValue(inicializeSections(response.data.list))}
+                    _result.postValue(response.data)
+                    withContext(Dispatchers.IO) { _list.postValue(inicializeSections(response.data.list)) }
                 }
                 is Resource.Error -> {
                     _result1.value = AllEvent.Failure(response.message.toString())
@@ -51,14 +49,14 @@ class TodayViewModel @Inject constructor(
         }
     }
 
-    private fun inicializeSections(weath:List<WeatherList>): MutableList<RecyclerViewSection> {
-        var size=0
-        for (i in 1..7){
+    private fun inicializeSections(weath: List<WeatherList>): MutableList<RecyclerViewSection> {
+        var size = 0
+        for (i in 1..7) {
             if (LocationUtils.parseDate(weath[0].dt_txt, "dd.MM.yyyy") == LocationUtils.parseDate(
                     weath[i].dt_txt,
                     "dd.MM.yyyy"
                 )
-            ){
+            ) {
                 size += 1
             }
         }
@@ -75,11 +73,11 @@ class TodayViewModel @Inject constructor(
         for (i in 1..4) {
             val items = mutableListOf<WeatherList>()
 
-            for (ii in size+1..size+8) {
+            for (ii in size + 1..size + 8) {
                 items.add(weath[ii])
             }
-            val dayOfWeek= LocationUtils.parseDate(weath[size + 8].dt_txt, "E")
-            size+=8
+            val dayOfWeek = LocationUtils.parseDate(weath[size + 8].dt_txt, "E")
+            size += 8
 
             val section = RecyclerViewSection(dayOfWeek(dayOfWeek), items)
             sections.add(section)
@@ -87,15 +85,15 @@ class TodayViewModel @Inject constructor(
         return sections
     }
 
-    private fun dayOfWeek(day:String): String {
-        return when(day){
-            "Mon"->"MONDAY"
-            "Tue"->"TUESDAY"
-            "Wed"->"WEDNESDAY"
-            "Thu"->"THURSDAY"
-            "Fri"->"FRIDAY"
-            "Sat"->"SATURDAY"
-            else-> "SUNDAY"
+    private fun dayOfWeek(day: String): String {
+        return when (day) {
+            "Mon" -> "MONDAY"
+            "Tue" -> "TUESDAY"
+            "Wed" -> "WEDNESDAY"
+            "Thu" -> "THURSDAY"
+            "Fri" -> "FRIDAY"
+            "Sat" -> "SATURDAY"
+            else -> "SUNDAY"
         }
     }
 

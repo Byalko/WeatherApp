@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -31,7 +30,7 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
     private val binding by viewBinding(TodayFragmentBinding::bind)
     private val viewModel: TodayViewModel by activityViewModels()
 
-    private var txtShare:String?=null
+    private var txtShare: String? = null
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -49,12 +48,12 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
             if (isOnline(requireActivity(), requireContext())) {
                 checkGPS()
             } else {
-                Toast.makeText(requireContext(),"Нет сети", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Нет сети", Toast.LENGTH_SHORT).show()
             }
         }
 
         var mLastClickTime = 0L
-        binding.shareButton.setOnClickListener{
+        binding.shareButton.setOnClickListener {
             if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
                 return@setOnClickListener
             }
@@ -64,26 +63,30 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
 
         lifecycleScope.launchWhenStarted {
             viewModel.result1.collect {
-                when(it){
+                when (it) {
                     is TodayViewModel.AllEvent.Success -> {
-                        with(binding){
+                        with(binding) {
 
-                            Glide.with(requireContext()).load(LocationUtils.DEFAULT_IMG+it.result.list[0]
-                                .weather[0].icon + "@2x.png").centerCrop().into(iconWheat)
-                            val strCity = it.result.city.name+", "+ it.result.city.country
+                            Glide.with(requireContext()).load(
+                                LocationUtils.DEFAULT_IMG + it.result.list[0]
+                                    .weather[0].icon + "@2x.png"
+                            ).centerCrop().into(iconWheat)
+                            val strCity = it.result.city.name + ", " + it.result.city.country
                             city.text = strCity
                             val compass = direction(it.result.list[0].wind.deg)
                             txtCompass.text = compass
 
-                            gradusy.text="${it.result.list[0].main.temp.toInt()-273} °C | ${it.result.list[0].weather[0].main}"
-                            txtRainfall.text="${it.result.list[0].main.humidity}%"
-                            txtDegree.text="${it.result.list[0].main.pressure} hPa"
-                            txtWind.text="${((it.result.list[0].wind.speed)*3.6).toInt()} km/h"
+                            gradusy.text =
+                                "${it.result.list[0].main.temp.toInt() - 273} °C | ${it.result.list[0].weather[0].main}"
+                            txtRainfall.text = "${it.result.list[0].main.humidity}%"
+                            txtDegree.text = "${it.result.list[0].main.pressure} hPa"
+                            txtWind.text = "${((it.result.list[0].wind.speed) * 3.6).toInt()} km/h"
 
-                            txtShare= "$strCity\n Degrees: ${it.result.list[0].main.temp.toInt()} °C | ${it.result.list[0].weather[0].main}\n " +
-                                    "Humidity: ${it.result.list[0].main.humidity}%\n " +
-                                    "Atmospheric pressure: ${it.result.list[0].main.pressure} hPa\n " +
-                                    "Wind speed: ${((it.result.list[0].wind.speed)*3.6).toInt()} km/h\n Wind direction: $compass"
+                            txtShare =
+                                "$strCity\n Degrees: ${it.result.list[0].main.temp.toInt()} °C | ${it.result.list[0].weather[0].main}\n " +
+                                        "Humidity: ${it.result.list[0].main.humidity}%\n " +
+                                        "Atmospheric pressure: ${it.result.list[0].main.pressure} hPa\n " +
+                                        "Wind speed: ${((it.result.list[0].wind.speed) * 3.6).toInt()} km/h\n Wind direction: $compass"
 
                             shareButton.visibility = View.VISIBLE
                             line1.visibility = View.VISIBLE
@@ -118,29 +121,28 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
         }
     }
 
-    private fun shareData(){
-        if (txtShare!=null){
+    private fun shareData() {
+        if (txtShare != null) {
             val intent = Intent()
-            intent.action=Intent.ACTION_SEND
+            intent.action = Intent.ACTION_SEND
             intent.putExtra(Intent.EXTRA_TEXT, txtShare)
-            intent.type="text/plain"
+            intent.type = "text/plain"
             startActivity(Intent.createChooser(intent, "Select app:"))
-        }
-        else{
+        } else {
             Toast.makeText(requireContext(), "No data to share!!!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun direction(deg: Int) : String {
-        if(deg in 0..23 || deg in 339..360 )  return "N"
-        if(deg in 24..68) return "NE"
-        if(deg in 69..113) return "E"
-        if(deg in 114..158) return "SE"
-        if(deg in 158..203) return "S"
-        if(deg in 204..248) return "SW"
-        if(deg in 249..293) return "W"
-        if(deg in 294..338) return "NW"
-        else return "WWWW"
+    private fun direction(deg: Int): String {
+        if (deg in 0..23 || deg in 339..360) return "N"
+        if (deg in 24..68) return "NE"
+        if (deg in 69..113) return "E"
+        if (deg in 114..158) return "SE"
+        if (deg in 158..203) return "S"
+        if (deg in 204..248) return "SW"
+        if (deg in 249..293) return "W"
+        return if (deg in 294..338) "NW"
+        else "WWWW"
     }
 
     @SuppressLint("MissingPermission")

@@ -1,6 +1,6 @@
 package com.example.weatherapp.repository
 
-import com.example.test_diplom.util.Resource
+import com.example.weatherapp.util.Resource
 import com.example.weatherapp.data.WeatherAPI
 import com.example.weatherapp.data.model.WeatherModel
 import retrofit2.Response

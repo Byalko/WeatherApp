@@ -31,7 +31,7 @@ class ItemAdapter(private val context: Context) : ListAdapter<WeatherList, ItemA
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val binding = RowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ItemAdapter.ItemViewHolder(binding)
+        return ItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
