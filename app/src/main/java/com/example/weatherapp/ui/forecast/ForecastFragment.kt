@@ -40,7 +40,7 @@ class ForecastFragment : Fragment(R.layout.forecast_fragment) {
     }
 
     private fun setupRecyclerView(){
-        adapter = ContainerAdapter()
+        adapter = ContainerAdapter(requireContext())
         binding.RecyclerWeek.adapter = adapter
         binding.RecyclerWeek.layoutManager = LinearLayoutManager(activity,
             LinearLayoutManager.VERTICAL,false)

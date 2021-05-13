@@ -13,6 +13,8 @@ import com.example.weatherapp.di.LocationUtils
 import com.example.weatherapp.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -28,13 +30,23 @@ class TodayViewModel @Inject constructor(
     private var _list = MutableLiveData<List<RecyclerViewSection>>()
     val list : LiveData<List<RecyclerViewSection>> = _list
 
+    private val _result1 = MutableStateFlow<AllEvent>(AllEvent.Empty)
+    val result1 : StateFlow<AllEvent> = _result1
+
     fun getData(lat:Double,lon:Double) {
 
         viewModelScope.launch {
+            _result1.value = AllEvent.Loading
             val response = weatherRepository.getFiveWeather(lat, lon)
-            if (response is Resource.Success){
-                _result.postValue(response.data!!)
-                withContext(Dispatchers.IO) {_list.postValue(inicializeSections(response.data.list))}
+            when(response){
+                is Resource.Success -> {
+                    _result1.value = AllEvent.Success(response.data!!)
+                    _result.postValue(response.data!!)
+                    withContext(Dispatchers.IO) {_list.postValue(inicializeSections(response.data.list))}
+                }
+                is Resource.Error -> {
+                    _result1.value = AllEvent.Failure(response.message.toString())
+                }
             }
         }
     }
@@ -85,5 +97,12 @@ class TodayViewModel @Inject constructor(
             "Sat"->"SATURDAY"
             else-> "SUNDAY"
         }
+    }
+
+    sealed class AllEvent {
+        class Success(val result: WeatherModel) : AllEvent()
+        class Failure(val errorText: String) : AllEvent()
+        object Loading : AllEvent()
+        object Empty : AllEvent()
     }
 }

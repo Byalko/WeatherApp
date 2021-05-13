@@ -19,6 +19,7 @@
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/toolBar_today"
@@ -33,82 +34,95 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/reload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_reload"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintTop_toBottomOf="@id/line_after_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <View
         android:id="@+id/line_after_toolbar"
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="@drawable/line_after_toolbar"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <ImageView
         android:id="@+id/icon_wheat"
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_marginTop="10dp"
+        android:contentDescription="@string/MainWeatherIcon"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/line_after_toolbar"
-        android:contentDescription="@string/MainWeatherIcon" />
+        app:layout_constraintTop_toBottomOf="@id/line_after_toolbar" />
 
     <TextView
         android:id="@+id/city"
         style="@style/MainInfo"
-        app:layout_constraintTop_toBottomOf="@id/icon_wheat"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/Black"
-        android:textSize="19sp" />
+        android:textSize="19sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/icon_wheat" />
 
     <TextView
         android:id="@+id/gradusy"
         style="@style/MainInfo"
-        android:textStyle="normal"
-        app:layout_constraintTop_toBottomOf="@id/city"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/Blue"
-        android:textSize="27sp" />
+        android:textSize="27sp"
+        android:textStyle="normal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/city" />
 
     <View
         android:id="@+id/line1"
         style="@style/line"
-        app:layout_constraintTop_toBottomOf="@id/gradusy"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/gradusy" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_rainfall"
         style="@style/icon_today"
         android:layout_marginEnd="40dp"
         android:src="@mipmap/ic_action_name"
-        app:layout_constraintRight_toRightOf="@id/ic_water"
+        android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/line1"
-        />
+        app:layout_constraintRight_toRightOf="@id/ic_water"
+        app:layout_constraintTop_toBottomOf="@id/line1" />
 
     <TextView
         android:id="@+id/txt_rainfall"
         style="@style/txt_today"
         android:layout_marginEnd="40dp"
-        app:layout_constraintRight_toRightOf="@id/ic_water"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/ic_water"
         app:layout_constraintTop_toBottomOf="@+id/ic_rainfall" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_water"
         style="@style/icon_today"
         android:src="@drawable/ic_water"
-        app:layout_constraintRight_toRightOf="@id/ic_degree"
+        android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="@id/ic_rainfall"
-        app:layout_constraintTop_toBottomOf="@id/line1"
-        />
+        app:layout_constraintRight_toRightOf="@id/ic_degree"
+        app:layout_constraintTop_toBottomOf="@id/line1" />
+
     <TextView
         android:id="@+id/txt_water"
-        android:layout_width="71dp"
         style="@style/txt_today"
+        android:layout_width="71dp"
         app:layout_constraintLeft_toLeftOf="@id/ic_rainfall"
         app:layout_constraintRight_toRightOf="@id/ic_degree"
         app:layout_constraintTop_toBottomOf="@+id/ic_water" />
@@ -116,16 +130,17 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_degree"
         style="@style/icon_today"
-        android:src="@drawable/ic_degree"
         android:layout_marginStart="40dp"
+        android:src="@drawable/ic_degree"
+        android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="@id/ic_water"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/line1"
-        />
+        app:layout_constraintTop_toBottomOf="@id/line1" />
+
     <TextView
         android:id="@+id/txt_degree"
-        android:layout_width="100dp"
         style="@style/txt_today"
+        android:layout_width="100dp"
         android:layout_marginStart="40dp"
         app:layout_constraintLeft_toLeftOf="@id/ic_water"
         app:layout_constraintRight_toRightOf="parent"
@@ -136,14 +151,15 @@
         style="@style/icon_today"
         android:layout_marginTop="40dp"
         android:src="@drawable/ic_wind"
+        android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/ic_compass"
-        app:layout_constraintTop_toBottomOf="@id/ic_water"
-        />
+        app:layout_constraintTop_toBottomOf="@id/ic_water" />
+
     <TextView
         android:id="@+id/txt_wind"
-        android:layout_width="81dp"
         style="@style/txt_today"
+        android:layout_width="81dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/ic_compass"
         app:layout_constraintTop_toBottomOf="@+id/ic_wind" />
@@ -153,14 +169,15 @@
         style="@style/icon_today"
         android:layout_marginTop="40dp"
         android:src="@drawable/ic_compass"
+        android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="@id/ic_wind"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ic_water"
-        />
+        app:layout_constraintTop_toBottomOf="@id/ic_water" />
+
     <TextView
         android:id="@+id/txt_compass"
-        android:layout_width="51dp"
         style="@style/txt_today"
+        android:layout_width="51dp"
         app:layout_constraintLeft_toLeftOf="@id/ic_wind"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ic_compass" />
@@ -168,9 +185,10 @@
     <View
         android:id="@+id/line2"
         style="@style/line"
-        app:layout_constraintTop_toBottomOf="@id/txt_wind"
+        android:visibility="invisible"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/txt_wind" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/share_button"
@@ -180,14 +198,31 @@
         android:text="@string/today_share"
         android:textColor="@color/orange"
         android:textStyle="normal"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/line2" />
 
-<!--
-    app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
--->
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/txt_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ivan Ebiry"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

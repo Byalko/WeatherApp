@@ -9,8 +9,10 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.example.weatherapp.R
@@ -20,6 +22,7 @@ import com.example.weatherapp.di.LocationUtils.isOnline
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.flow.collect
 
 
 class TodayFragment : Fragment(R.layout.today_fragment) {
@@ -39,7 +42,7 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
 
         Log.d("Location", "OnCreate")
 
-        binding.shareButton.setOnClickListener {
+        binding.reload.setOnClickListener {
             if (isOnline(requireActivity(), requireContext())) {
                 checkGPS()
             } else {
@@ -47,22 +50,54 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
             }
         }
 
-        viewModel.result.observe(viewLifecycleOwner,{
-            with(binding){
+        lifecycleScope.launchWhenStarted {
+            viewModel.result1.collect {
+                when(it){
+                    is TodayViewModel.AllEvent.Success -> {
+                        with(binding){
 
-                Glide.with(requireContext()).load(LocationUtils.DEFAULT_IMG+it.list[0]
-                    .weather[0].icon + "@2x.png").centerCrop().into(iconWheat)
-                val strCity = it.city.name+", "+ it.city.country
-                city.text = strCity
-                txtCompass.text = direction(it.list[0].wind.deg)
+                            Glide.with(requireContext()).load(LocationUtils.DEFAULT_IMG+it.result.list[0]
+                                .weather[0].icon + "@2x.png").centerCrop().into(iconWheat)
+                            val strCity = it.result.city.name+", "+ it.result.city.country
+                            city.text = strCity
+                            txtCompass.text = direction(it.result.list[0].wind.deg)
 
-                gradusy.text="${it.list[0].main.temp.toInt()} °C | ${it.list[0].weather[0].main}"
-                txtRainfall.text="${it.list[0].main.humidity}%"
-                txtDegree.text="${it.list[0].main.pressure} hPa"
-                txtWind.text="${((it.list[0].wind.speed)*3.6).toInt()} km/h"
+                            gradusy.text="${it.result.list[0].main.temp.toInt()-273} °C | ${it.result.list[0].weather[0].main}"
+                            txtRainfall.text="${it.result.list[0].main.humidity}%"
+                            txtDegree.text="${it.result.list[0].main.pressure} hPa"
+                            txtWind.text="${((it.result.list[0].wind.speed)*3.6).toInt()} km/h"
 
+                            shareButton.visibility = View.VISIBLE
+                            line1.visibility = View.VISIBLE
+                            line2.visibility = View.VISIBLE
+                            icCompass.visibility = View.VISIBLE
+                            icDegree.visibility = View.VISIBLE
+                            icRainfall.visibility = View.VISIBLE
+                            icWater.visibility = View.VISIBLE
+                            icWind.visibility = View.VISIBLE
+
+                            binding.progress.visibility = View.INVISIBLE
+                            binding.txtError.visibility = View.INVISIBLE
+                        }
+                    }
+
+                    is TodayViewModel.AllEvent.Loading -> {
+                        binding.progress.visibility = View.VISIBLE
+                    }
+
+                    is TodayViewModel.AllEvent.Failure -> {
+                        binding.txtError.visibility = View.VISIBLE
+                        binding.txtError.text = it.errorText
+                    }
+
+                    else -> {
+                        binding.txtError.visibility = View.VISIBLE
+                        binding.txtError.text = "No data"
+                    }
+
+                }
             }
-        })
+        }
     }
 
     private fun direction(deg: Int) : String {

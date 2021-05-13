@@ -1,5 +1,6 @@
 package com.example.weatherapp.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.data.RecyclerViewSection
 import com.example.weatherapp.databinding.ItemContainerBinding
 
-class ContainerAdapter : ListAdapter<RecyclerViewSection, ContainerAdapter.SectionViewHolder>(ContainerComparator()) {
+class ContainerAdapter (private val context: Context): ListAdapter<RecyclerViewSection, ContainerAdapter.SectionViewHolder>(ContainerComparator()) {
 
     class SectionViewHolder(private val binding: ItemContainerBinding) : RecyclerView.ViewHolder( binding.root ) {
-        fun bind(section: RecyclerViewSection) {
+        fun bind(section: RecyclerViewSection, context: Context) {
            binding.apply {
                sectionName.text = section.label
-               val adapter = ItemAdapter()
+               val adapter = ItemAdapter(context)
                binding.recyclerView.adapter = adapter
                binding.recyclerView.layoutManager = LinearLayoutManager(binding.recyclerView.context,
                    LinearLayoutManager.VERTICAL,false)
@@ -34,7 +35,7 @@ class ContainerAdapter : ListAdapter<RecyclerViewSection, ContainerAdapter.Secti
     override fun onBindViewHolder(holder: SectionViewHolder, position: Int) {
         val currentItem = getItem(position)
         if (currentItem!=null){
-            holder.bind(currentItem)
+            holder.bind(currentItem,context)
         }
     }
 
