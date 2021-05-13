@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -30,6 +31,8 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
     private val binding by viewBinding(TodayFragmentBinding::bind)
     private val viewModel: TodayViewModel by activityViewModels()
 
+    private var txtShare:String?=null
+
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     @SuppressLint("SetTextI18n")
@@ -50,6 +53,15 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
             }
         }
 
+        var mLastClickTime = 0L
+        binding.shareButton.setOnClickListener{
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) {
+                return@setOnClickListener
+            }
+            mLastClickTime = SystemClock.elapsedRealtime()
+            shareData()
+        }
+
         lifecycleScope.launchWhenStarted {
             viewModel.result1.collect {
                 when(it){
@@ -60,12 +72,18 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
                                 .weather[0].icon + "@2x.png").centerCrop().into(iconWheat)
                             val strCity = it.result.city.name+", "+ it.result.city.country
                             city.text = strCity
-                            txtCompass.text = direction(it.result.list[0].wind.deg)
+                            val compass = direction(it.result.list[0].wind.deg)
+                            txtCompass.text = compass
 
                             gradusy.text="${it.result.list[0].main.temp.toInt()-273} °C | ${it.result.list[0].weather[0].main}"
                             txtRainfall.text="${it.result.list[0].main.humidity}%"
                             txtDegree.text="${it.result.list[0].main.pressure} hPa"
                             txtWind.text="${((it.result.list[0].wind.speed)*3.6).toInt()} km/h"
+
+                            txtShare= "$strCity\n Degrees: ${it.result.list[0].main.temp.toInt()} °C | ${it.result.list[0].weather[0].main}\n " +
+                                    "Humidity: ${it.result.list[0].main.humidity}%\n " +
+                                    "Atmospheric pressure: ${it.result.list[0].main.pressure} hPa\n " +
+                                    "Wind speed: ${((it.result.list[0].wind.speed)*3.6).toInt()} km/h\n Wind direction: $compass"
 
                             shareButton.visibility = View.VISIBLE
                             line1.visibility = View.VISIBLE
@@ -100,6 +118,19 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
         }
     }
 
+    private fun shareData(){
+        if (txtShare!=null){
+            val intent = Intent()
+            intent.action=Intent.ACTION_SEND
+            intent.putExtra(Intent.EXTRA_TEXT, txtShare)
+            intent.type="text/plain"
+            startActivity(Intent.createChooser(intent, "Select app:"))
+        }
+        else{
+            Toast.makeText(requireContext(), "No data to share!!!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun direction(deg: Int) : String {
         if(deg in 0..23 || deg in 339..360 )  return "N"
         if(deg in 24..68) return "NE"
@@ -116,11 +147,6 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
     private fun getLastLocation() {
         fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
-                Toast.makeText(
-                    requireContext(),
-                    "${location.latitude}  ${location.longitude}",
-                    Toast.LENGTH_LONG
-                ).show()
                 Log.d("GPS_main", "Ok")
 
                 viewModel.getData(location.latitude, location.longitude)
