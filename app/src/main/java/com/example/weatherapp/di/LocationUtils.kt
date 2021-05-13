@@ -7,11 +7,19 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import com.vmadalin.easypermissions.EasyPermissions
+import java.text.SimpleDateFormat
+import java.util.*
 
 object LocationUtils {
 
     const val PERMISSION_LOCATION_REQUEST_CODE = 1
     const val DEFAULT_IMG = "http://openweathermap.org/img/wn/"
+
+    fun parseDate(date:String, pattern:String): String {
+        val parser =  SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss", Locale.ENGLISH)
+        val formatter = SimpleDateFormat(pattern, Locale.ENGLISH)
+        return formatter.format(parser.parse(date)!!)
+    }
 
     fun hasLocationPermission(context: Context) =
         EasyPermissions.hasPermissions(

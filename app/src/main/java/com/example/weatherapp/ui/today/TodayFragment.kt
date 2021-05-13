@@ -60,6 +60,7 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
                 txtRainfall.text="${it.list[0].main.humidity}%"
                 txtDegree.text="${it.list[0].main.pressure} hPa"
                 txtWind.text="${((it.list[0].wind.speed)*3.6).toInt()} km/h"
+
             }
         })
     }
