@@ -1,9 +1,6 @@
 package com.example.weatherapp.data
 
-import com.example.weatherapp.data.model.*
-import com.example.weatherapp.data.model.Weather
-
-class WeatherModelDB (
+class WeatherModelDB(
     val country: String,
     val name: String,
     val list: List<WeatherListDB>
@@ -11,9 +8,9 @@ class WeatherModelDB (
 
 data class WeatherListDB(
     val dt_txt: String,
-    val weather: List<Weather>,
-    val main: Main,
-    val wind: Wind
+    val weather: List<WeatherDB>,
+    val main: MainDB,
+    val wind: WindDB
 )
 
 data class MainDB(

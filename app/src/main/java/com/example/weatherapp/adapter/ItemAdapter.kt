@@ -8,16 +8,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.weatherapp.data.model.WeatherList
+import com.example.weatherapp.data.WeatherListDB
 import com.example.weatherapp.databinding.RowBinding
 import com.example.weatherapp.di.LocationUtils
 import com.example.weatherapp.di.LocationUtils.parseDate
 
-class ItemAdapter(private val context: Context) : ListAdapter<WeatherList, ItemAdapter.ItemViewHolder>(ItemComparator()) {
+class ItemAdapter(private val context: Context) : ListAdapter<WeatherListDB, ItemAdapter.ItemViewHolder>(ItemComparator()) {
 
     class ItemViewHolder(private val binding: RowBinding) : RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
-        fun bind(currentItem: WeatherList, context: Context) {
+        fun bind(currentItem: WeatherListDB, context: Context) {
             Glide.with(context).load(
                 LocationUtils.DEFAULT_IMG+currentItem
                 .weather[0].icon + "@2x.png").centerCrop().into(binding.ImageItem)
@@ -41,15 +41,15 @@ class ItemAdapter(private val context: Context) : ListAdapter<WeatherList, ItemA
         }
     }
 
-    class ItemComparator : DiffUtil.ItemCallback<WeatherList>() {
+    class ItemComparator : DiffUtil.ItemCallback<WeatherListDB>() {
         override fun areItemsTheSame(
-            oldItem: WeatherList,
-            newItem: WeatherList
+            oldItem: WeatherListDB,
+            newItem: WeatherListDB
         ): Boolean = oldItem.dt_txt == newItem.dt_txt
 
         override fun areContentsTheSame(
-            oldItem: WeatherList,
-            newItem: WeatherList
+            oldItem: WeatherListDB,
+            newItem: WeatherListDB
         ): Boolean = oldItem.main.temp == newItem.main.temp
     }
 }

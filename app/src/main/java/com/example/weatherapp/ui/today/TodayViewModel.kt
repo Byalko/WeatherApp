@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.util.Resource
 import com.example.weatherapp.data.RecyclerViewSection
+import com.example.weatherapp.data.RecyclerViewSectionDB
 import com.example.weatherapp.data.model.WeatherList
 import com.example.weatherapp.data.model.WeatherModel
+import com.example.weatherapp.data.toRecyclerViewSectionDB
 import com.example.weatherapp.di.LocationUtils
 import com.example.weatherapp.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,8 +28,8 @@ class TodayViewModel @Inject constructor(
     private var _result = MutableLiveData<WeatherModel>()
     val result: LiveData<WeatherModel> = _result
 
-    private var _list = MutableLiveData<List<RecyclerViewSection>>()
-    val list: LiveData<List<RecyclerViewSection>> = _list
+    private var _list = MutableLiveData<List<RecyclerViewSectionDB>>()
+    val list: LiveData<List<RecyclerViewSectionDB>> = _list
 
     private val _result1 = MutableStateFlow<AllEvent>(AllEvent.Empty)
     val result1: StateFlow<AllEvent> = _result1
@@ -39,8 +41,10 @@ class TodayViewModel @Inject constructor(
             when (val response = weatherRepository.getFiveWeather(lat, lon)) {
                 is Resource.Success -> {
                     _result1.value = AllEvent.Success(response.data!!)
-                    _result.postValue(response.data)
-                    withContext(Dispatchers.IO) { _list.postValue(inicializeSections(response.data.list)) }
+                    _result.postValue(response.data!!)
+                    val db = response.data.list
+                    val recDB = inicializeSections(db).map { it.toRecyclerViewSectionDB() }
+                    withContext(Dispatchers.IO) { _list.postValue(recDB) }
                 }
                 is Resource.Error -> {
                     _result1.value = AllEvent.Failure(response.message.toString())

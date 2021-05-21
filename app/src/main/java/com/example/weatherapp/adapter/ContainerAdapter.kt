@@ -8,12 +8,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.data.RecyclerViewSection
+import com.example.weatherapp.data.RecyclerViewSectionDB
 import com.example.weatherapp.databinding.ItemContainerBinding
 
-class ContainerAdapter (private val context: Context): ListAdapter<RecyclerViewSection, ContainerAdapter.SectionViewHolder>(ContainerComparator()) {
+class ContainerAdapter (private val context: Context): ListAdapter<RecyclerViewSectionDB, ContainerAdapter.SectionViewHolder>(ContainerComparator()) {
 
     class SectionViewHolder(private val binding: ItemContainerBinding) : RecyclerView.ViewHolder( binding.root ) {
-        fun bind(section: RecyclerViewSection, context: Context) {
+        fun bind(section: RecyclerViewSectionDB, context: Context) {
            binding.apply {
                sectionName.text = section.label
                val adapter = ItemAdapter(context)
@@ -39,15 +40,15 @@ class ContainerAdapter (private val context: Context): ListAdapter<RecyclerViewS
         }
     }
 
-    class ContainerComparator : DiffUtil.ItemCallback<RecyclerViewSection>() {
+    class ContainerComparator : DiffUtil.ItemCallback<RecyclerViewSectionDB>() {
         override fun areItemsTheSame(
-            oldItem: RecyclerViewSection,
-            newItem: RecyclerViewSection
+            oldItem: RecyclerViewSectionDB,
+            newItem: RecyclerViewSectionDB
         ): Boolean = oldItem.label == newItem.label
 
         override fun areContentsTheSame(
-            oldItem: RecyclerViewSection,
-            newItem: RecyclerViewSection
+            oldItem: RecyclerViewSectionDB,
+            newItem: RecyclerViewSectionDB
         ): Boolean = oldItem.items == newItem.items
     }
 }
