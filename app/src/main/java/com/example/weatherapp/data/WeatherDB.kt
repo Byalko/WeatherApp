@@ -1,11 +1,13 @@
 package com.example.weatherapp.data
 
-class WeatherModelDB(
+import androidx.room.Entity
+
+class LocationDB(
     val country: String,
-    val name: String,
-    val list: List<WeatherListDB>
+    val name: String
 )
 
+@Entity(tableName = "weatherList")
 data class WeatherListDB(
     val dt_txt: String,
     val weather: List<WeatherDB>,
@@ -13,18 +15,21 @@ data class WeatherListDB(
     val wind: WindDB
 )
 
+@Entity(tableName = "main")
 data class MainDB(
     val temp: Double,
     val humidity: Int,
     val pressure: Int
 )
 
+@Entity(tableName = "weather")
 data class WeatherDB(
     val description: String,
     val icon: String,
     val main: String
 )
 
+@Entity(tableName = "wind")
 data class WindDB(
     val deg: Int,
     val speed: Double
