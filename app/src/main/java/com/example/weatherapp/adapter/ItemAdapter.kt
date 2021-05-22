@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.weatherapp.R
 import com.example.weatherapp.data.WeatherListDB
 import com.example.weatherapp.databinding.RowBinding
 import com.example.weatherapp.util.LocationUtils
@@ -16,7 +17,6 @@ import com.example.weatherapp.util.LocationUtils.parseDate
 class ItemAdapter(private val context: Context) : ListAdapter<WeatherListDB, ItemAdapter.ItemViewHolder>(ItemComparator()) {
 
     class ItemViewHolder(private val binding: RowBinding) : RecyclerView.ViewHolder(binding.root) {
-        @SuppressLint("SetTextI18n")
         fun bind(currentItem: WeatherListDB, context: Context) {
             Glide.with(context).load(
                 LocationUtils.DEFAULT_IMG+currentItem
@@ -24,7 +24,8 @@ class ItemAdapter(private val context: Context) : ListAdapter<WeatherListDB, Ite
             binding.apply {
                 TimeItem.text = parseDate(currentItem.dt_txt,"HH:mm")
                 DesItem.text = currentItem.weather[0].description
-                DegreeItem.text="${currentItem.main.temp.toInt()-273}°C"
+                DegreeItem.text = String.format(context.resources.getString(R.string.gradusy_forecast),
+                    currentItem.main.temp.toInt() - 273)
             }
         }
     }

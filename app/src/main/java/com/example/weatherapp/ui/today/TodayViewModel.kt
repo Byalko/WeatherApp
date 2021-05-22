@@ -38,7 +38,7 @@ class TodayViewModel @Inject constructor(
             val localWeather = withContext(Dispatchers.IO) { databaseRepository.getAll() }
             val localLocation = withContext(Dispatchers.IO) { databaseRepository.getLocation() }
             if (localWeather.isNotEmpty() && localLocation.isNotEmpty()) {
-                _list.value = AllEvent.Success(localWeather)
+                _list.emit(AllEvent.Success(localWeather))
                 _location.postValue(localLocation[0])
             }
         }
@@ -65,7 +65,7 @@ class TodayViewModel @Inject constructor(
                         val localWeather = withContext(Dispatchers.Default) {
                             inicializeSections(remoteWeather).map { it.toRecyclerViewSectionDB() }
                         }
-                        _list.value = AllEvent.Success(localWeather)
+                        _list.emit( AllEvent.Success(localWeather) )
                         withContext(Dispatchers.IO) { databaseRepository.deleteAll() }
                         withContext(Dispatchers.IO) { databaseRepository.insertAll(localWeather) }
                     } else {

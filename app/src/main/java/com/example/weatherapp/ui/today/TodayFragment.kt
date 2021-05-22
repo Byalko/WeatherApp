@@ -3,6 +3,7 @@ package com.example.weatherapp.ui.today
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentSender
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.Looper
 import android.os.SystemClock
@@ -32,11 +33,9 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
     private val viewModel: TodayViewModel by activityViewModels()
 
     private var txtShare: String? = null
-    private var strCity: String? = ""
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -66,14 +65,14 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
         viewModel.location.observe(viewLifecycleOwner, {
             val location = viewModel.location.value
             if (location != null) {
-                strCity =
-                    viewModel.location.value!!.name + ", " + viewModel.location.value!!.country
-                binding.city.text = strCity
+                binding.city.text = String.format(resources.getString(R.string.city_country),
+                    location.name,location.country)
             }
         })
 
         lifecycleScope.launchWhenStarted {
             viewModel.list.collect {
+                val res: Resources = resources
                 when (it) {
                     is TodayViewModel.AllEvent.Success -> {
                         with(binding) {
@@ -87,17 +86,15 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
                             val compass = direction(result.wind.deg)
                             txtCompass.text = compass
 
-                            gradusy.text =
-                                "${result.main.temp.toInt() - 273} °C | ${result.weather[0].main}"
-                            txtRainfall.text = "${result.main.humidity}%"
-                            txtDegree.text = "${result.main.pressure} hPa"
-                            txtWind.text = "${((result.wind.speed) * 3.6).toInt()} km/h"
+                            gradusy.text = String.format(res.getString(R.string.gradusy_today),
+                                result.main.temp.toInt() - 273,result.weather[0].main)
+                            txtRainfall.text = String.format(res.getString(R.string.rainfall),result.main.humidity)
+                            txtDegree.text = String.format(res.getString(R.string.degree),result.main.pressure)
+                            txtWind.text = String.format(res.getString(R.string.wind),((result.wind.speed) * 3.6).toInt())
 
-                            txtShare =
-                                "$strCity\n Degrees: ${result.main.temp.toInt()} °C | ${result.weather[0].main}\n " +
-                                        "Humidity: ${result.main.humidity}%\n " +
-                                        "Atmospheric pressure: ${result.main.pressure} hPa\n " +
-                                        "Wind speed: ${((result.wind.speed) * 3.6).toInt()} km/h\n Wind direction: $compass"
+                            txtShare = String.format(res.getString(R.string.share),result.main.temp.toInt(),
+                                result.weather[0].main,result.main.humidity,result.main.pressure,
+                                ((result.wind.speed) * 3.6).toInt(),compass)
 
                             shareButton.visibility = View.VISIBLE
                             line1.visibility = View.VISIBLE
@@ -123,7 +120,7 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
 
                     else -> {
                         binding.txtError.visibility = View.VISIBLE
-                        binding.txtError.text = "No data"
+                        binding.txtError.text = String.format(res.getString(R.string.no_data))
                     }
 
                 }
@@ -152,7 +149,7 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
         if (deg in 204..248) return "SW"
         if (deg in 249..293) return "W"
         return if (deg in 294..338) "NW"
-        else "WWWW"
+        else "WW"
     }
 
     @SuppressLint("MissingPermission")
@@ -200,10 +197,8 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
 
     private val mLocationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            //val location: Location = locationResult.lastLocation
             Log.d("GPS_main", "Callback")
             getLastLocation()
-            //viewModel.getData(location.latitude, location.longitude)
         }
     }
 
@@ -241,7 +236,6 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
             when (resultCode) {
                 AppCompatActivity.RESULT_OK -> {
                     requestNewLocationData()
-                    Toast.makeText(requireContext(), "OK", Toast.LENGTH_SHORT).show()
                 }
                 AppCompatActivity.RESULT_CANCELED -> {
                     Toast.makeText(requireContext(), "Not enable", Toast.LENGTH_SHORT).show()

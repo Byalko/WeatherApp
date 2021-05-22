@@ -9,4 +9,18 @@
     <string name="toolBar_today">Today</string>
     <string name="MainWeatherIcon">MainWeatherIcon</string>
 
+    <string name="city_country">%1$s, %2$s</string>
+    <string name="no_data">No data</string>
+    <string name="gradusy_today">%1$d °C | %2$s</string>
+    <string name="gradusy_forecast">%1$d°C</string>
+    <string name="rainfall">%1$d %%</string>
+    <string name="degree">%1$d hPa</string>
+    <string name="wind">%1$d km/h</string>
+    <string name="share">
+    Degrees: %1$d °C | %2$s\n
+    Humidity: %3$d %%\n
+    Atmospheric pressure: %4$d hPa\n
+    Wind speed: %5$d km/h\n
+    Wind direction: %6$s
+    </string>
 </resources>

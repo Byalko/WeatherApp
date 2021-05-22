@@ -51,7 +51,7 @@ class ForecastFragment : Fragment(R.layout.forecast_fragment) {
                     }
                     is AllEvent.Empty -> {
                         binding.txtError.visibility = View.VISIBLE
-                        binding.txtError.text = "No data"
+                        binding.txtError.text = resources.getString(R.string.no_data)
                     }
                 }
             }
