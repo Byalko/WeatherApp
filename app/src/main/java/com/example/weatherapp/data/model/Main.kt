@@ -16,5 +16,5 @@ data class Main(
 )
 
 fun Main.toMainDB(): MainDB {
-    return MainDB(this.temp,this.humidity,this.pressure)
+    return MainDB(temp = this.temp,humidity = this.humidity,pressure = this.pressure)
 }

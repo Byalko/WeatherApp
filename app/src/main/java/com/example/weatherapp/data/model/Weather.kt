@@ -13,5 +13,5 @@ data class Weather(
 )
 
 fun Weather.toWeatherDB() = WeatherDB(
-    description, icon, main
+    description = description,icon =  icon,main =  main
 )

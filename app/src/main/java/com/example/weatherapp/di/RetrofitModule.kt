@@ -35,20 +35,20 @@ object RetrofitModule {
     }
 
     @Provides
-    fun provideHttpClient(): OkHttpClient = OkHttpClient.Builder().apply {
-        addInterceptor(provideLoggingInterceptor())
+    fun provideHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient = OkHttpClient.Builder().apply {
+        addInterceptor(httpLoggingInterceptor)
         addInterceptor { chain -> return@addInterceptor addApiKeyToRequests(chain) }
     }.build()
 
     @Singleton
     @Provides
-    fun provideApiWeather(): Retrofit = Retrofit.Builder()
+    fun provideApiWeather(httpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(MoshiConverterFactory.create())
-        .client(provideHttpClient())
+        .client(httpClient)
         .build()
 
     @Singleton
     @Provides
-    fun clientApiWeather(): WeatherAPI = provideApiWeather().create(WeatherAPI::class.java)
+    fun clientApiWeather(retrofit: Retrofit): WeatherAPI = retrofit.create(WeatherAPI::class.java)
 }

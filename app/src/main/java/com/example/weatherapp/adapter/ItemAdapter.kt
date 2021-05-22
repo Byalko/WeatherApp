@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weatherapp.data.WeatherListDB
 import com.example.weatherapp.databinding.RowBinding
-import com.example.weatherapp.di.LocationUtils
-import com.example.weatherapp.di.LocationUtils.parseDate
+import com.example.weatherapp.util.LocationUtils
+import com.example.weatherapp.util.LocationUtils.parseDate
 
 class ItemAdapter(private val context: Context) : ListAdapter<WeatherListDB, ItemAdapter.ItemViewHolder>(ItemComparator()) {
 

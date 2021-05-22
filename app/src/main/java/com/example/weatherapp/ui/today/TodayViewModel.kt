@@ -4,14 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherapp.util.Resource
+import com.example.weatherapp.data.LocationDB
 import com.example.weatherapp.data.RecyclerViewSection
 import com.example.weatherapp.data.RecyclerViewSectionDB
 import com.example.weatherapp.data.model.WeatherList
-import com.example.weatherapp.data.model.WeatherModel
 import com.example.weatherapp.data.toRecyclerViewSectionDB
-import com.example.weatherapp.di.LocationUtils
+import com.example.weatherapp.util.LocationUtils
+import com.example.weatherapp.repository.DatabaseRepository
 import com.example.weatherapp.repository.WeatherRepository
+import com.example.weatherapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,32 +23,57 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TodayViewModel @Inject constructor(
-    private val weatherRepository: WeatherRepository
+    private val weatherRepository: WeatherRepository,
+    private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
 
-    private var _result = MutableLiveData<WeatherModel>()
-    val result: LiveData<WeatherModel> = _result
+    private var _location = MutableLiveData<LocationDB>()
+    val location: LiveData<LocationDB> = _location
 
-    private var _list = MutableLiveData<List<RecyclerViewSectionDB>>()
-    val list: LiveData<List<RecyclerViewSectionDB>> = _list
+    private val _list = MutableStateFlow<AllEvent>(AllEvent.Empty)
+    val list: StateFlow<AllEvent> = _list
 
-    private val _result1 = MutableStateFlow<AllEvent>(AllEvent.Empty)
-    val result1: StateFlow<AllEvent> = _result1
+    init {
+        viewModelScope.launch {
+            val localWeather = withContext(Dispatchers.IO) { databaseRepository.getAll() }
+            val localLocation = withContext(Dispatchers.IO) { databaseRepository.getLocation() }
+            if (localWeather.isNotEmpty() && localLocation.isNotEmpty()) {
+                _list.value = AllEvent.Success(localWeather)
+                _location.postValue(localLocation[0])
+            }
+        }
+    }
 
     fun getData(lat: Double, lon: Double) {
 
         viewModelScope.launch {
-            _result1.value = AllEvent.Loading
+            _list.value = AllEvent.Loading
+
             when (val response = weatherRepository.getFiveWeather(lat, lon)) {
                 is Resource.Success -> {
-                    _result1.value = AllEvent.Success(response.data!!)
-                    _result.postValue(response.data!!)
-                    val db = response.data.list
-                    val recDB = inicializeSections(db).map { it.toRecyclerViewSectionDB() }
-                    withContext(Dispatchers.IO) { _list.postValue(recDB) }
+                    if (response.data != null) {
+                        withContext(Dispatchers.IO) { databaseRepository.deleteLocation() }
+                        withContext(Dispatchers.IO) {
+                            val remoteLocation = LocationDB(
+                                country = response.data.city.country,
+                                name = response.data.city.name
+                            )
+                            databaseRepository.insertLocation(remoteLocation)
+                            _location.postValue(remoteLocation)
+                        }
+                        val remoteWeather = response.data.list
+                        val localWeather = withContext(Dispatchers.Default) {
+                            inicializeSections(remoteWeather).map { it.toRecyclerViewSectionDB() }
+                        }
+                        _list.value = AllEvent.Success(localWeather)
+                        withContext(Dispatchers.IO) { databaseRepository.deleteAll() }
+                        withContext(Dispatchers.IO) { databaseRepository.insertAll(localWeather) }
+                    } else {
+                        _list.value = AllEvent.Failure("No data")
+                    }
                 }
                 is Resource.Error -> {
-                    _result1.value = AllEvent.Failure(response.message.toString())
+                    _list.value = AllEvent.Failure(response.message.toString())
                 }
             }
         }
@@ -102,7 +128,7 @@ class TodayViewModel @Inject constructor(
     }
 
     sealed class AllEvent {
-        class Success(val result: WeatherModel) : AllEvent()
+        class Success(val result: List<RecyclerViewSectionDB>) : AllEvent()
         class Failure(val errorText: String) : AllEvent()
         object Loading : AllEvent()
         object Empty : AllEvent()

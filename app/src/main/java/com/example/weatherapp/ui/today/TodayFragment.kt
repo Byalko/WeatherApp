@@ -17,20 +17,22 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.example.weatherapp.R
 import com.example.weatherapp.databinding.TodayFragmentBinding
-import com.example.weatherapp.di.LocationUtils
-import com.example.weatherapp.di.LocationUtils.isOnline
+import com.example.weatherapp.util.LocationUtils
+import com.example.weatherapp.util.LocationUtils.isOnline
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 
-
+@AndroidEntryPoint
 class TodayFragment : Fragment(R.layout.today_fragment) {
 
     private val binding by viewBinding(TodayFragmentBinding::bind)
     private val viewModel: TodayViewModel by activityViewModels()
 
     private var txtShare: String? = null
+    private var strCity: String? = ""
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -61,32 +63,41 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
             shareData()
         }
 
+        viewModel.location.observe(viewLifecycleOwner, {
+            val location = viewModel.location.value
+            if (location != null) {
+                strCity =
+                    viewModel.location.value!!.name + ", " + viewModel.location.value!!.country
+                binding.city.text = strCity
+            }
+        })
+
         lifecycleScope.launchWhenStarted {
-            viewModel.result1.collect {
+            viewModel.list.collect {
                 when (it) {
                     is TodayViewModel.AllEvent.Success -> {
                         with(binding) {
 
+                            val result = it.result[0].items[0]
+
                             Glide.with(requireContext()).load(
-                                LocationUtils.DEFAULT_IMG + it.result.list[0]
-                                    .weather[0].icon + "@2x.png"
+                                LocationUtils.DEFAULT_IMG + result.weather[0].icon + "@2x.png"
                             ).centerCrop().into(iconWheat)
-                            val strCity = it.result.city.name + ", " + it.result.city.country
-                            city.text = strCity
-                            val compass = direction(it.result.list[0].wind.deg)
+
+                            val compass = direction(result.wind.deg)
                             txtCompass.text = compass
 
                             gradusy.text =
-                                "${it.result.list[0].main.temp.toInt() - 273} °C | ${it.result.list[0].weather[0].main}"
-                            txtRainfall.text = "${it.result.list[0].main.humidity}%"
-                            txtDegree.text = "${it.result.list[0].main.pressure} hPa"
-                            txtWind.text = "${((it.result.list[0].wind.speed) * 3.6).toInt()} km/h"
+                                "${result.main.temp.toInt() - 273} °C | ${result.weather[0].main}"
+                            txtRainfall.text = "${result.main.humidity}%"
+                            txtDegree.text = "${result.main.pressure} hPa"
+                            txtWind.text = "${((result.wind.speed) * 3.6).toInt()} km/h"
 
                             txtShare =
-                                "$strCity\n Degrees: ${it.result.list[0].main.temp.toInt()} °C | ${it.result.list[0].weather[0].main}\n " +
-                                        "Humidity: ${it.result.list[0].main.humidity}%\n " +
-                                        "Atmospheric pressure: ${it.result.list[0].main.pressure} hPa\n " +
-                                        "Wind speed: ${((it.result.list[0].wind.speed) * 3.6).toInt()} km/h\n Wind direction: $compass"
+                                "$strCity\n Degrees: ${result.main.temp.toInt()} °C | ${result.weather[0].main}\n " +
+                                        "Humidity: ${result.main.humidity}%\n " +
+                                        "Atmospheric pressure: ${result.main.pressure} hPa\n " +
+                                        "Wind speed: ${((result.wind.speed) * 3.6).toInt()} km/h\n Wind direction: $compass"
 
                             shareButton.visibility = View.VISIBLE
                             line1.visibility = View.VISIBLE
@@ -107,8 +118,7 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
                     }
 
                     is TodayViewModel.AllEvent.Failure -> {
-                        binding.txtError.visibility = View.VISIBLE
-                        binding.txtError.text = it.errorText
+                        Toast.makeText(requireContext(), it.errorText, Toast.LENGTH_LONG).show()
                     }
 
                     else -> {

@@ -9,5 +9,5 @@ data class Wind(
 )
 
 fun Wind.toWindDB():WindDB {
-    return WindDB(this.deg,this.speed)
+    return WindDB(deg = this.deg,speed = this.speed)
 }
