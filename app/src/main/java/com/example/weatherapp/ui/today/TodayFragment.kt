@@ -71,7 +71,7 @@ class TodayFragment : Fragment(R.layout.today_fragment) {
         })
 
         lifecycleScope.launchWhenStarted {
-            viewModel.list.collect {
+            viewModel.weather.collect {
                 val res: Resources = resources
                 when (it) {
                     is TodayViewModel.AllEvent.Success -> {

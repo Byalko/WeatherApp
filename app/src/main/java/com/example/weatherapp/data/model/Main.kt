@@ -1,7 +1,6 @@
 package com.example.weatherapp.data.model
 
 import com.example.weatherapp.data.MainDB
-import com.example.weatherapp.data.WindDB
 
 data class Main(
     val feels_like: Double,
@@ -16,5 +15,5 @@ data class Main(
 )
 
 fun Main.toMainDB(): MainDB {
-    return MainDB(temp = this.temp,humidity = this.humidity,pressure = this.pressure)
+    return MainDB(temp = this.temp, humidity = this.humidity, pressure = this.pressure)
 }

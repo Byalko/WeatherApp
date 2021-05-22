@@ -38,7 +38,7 @@ class ForecastFragment : Fragment(R.layout.forecast_fragment) {
         })
 
         lifecycleScope.launchWhenStarted {
-            viewModel.list.collect {
+            viewModel.weather.collect {
                 when (it) {
                     is AllEvent.Success -> {
                         adapter.submitList(it.result)

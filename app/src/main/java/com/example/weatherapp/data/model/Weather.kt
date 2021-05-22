@@ -1,9 +1,6 @@
 package com.example.weatherapp.data.model
 
-import com.example.weatherapp.data.RecyclerViewSection
-import com.example.weatherapp.data.RecyclerViewSectionDB
 import com.example.weatherapp.data.WeatherDB
-import com.example.weatherapp.data.WindDB
 
 data class Weather(
     val description: String,
@@ -13,5 +10,5 @@ data class Weather(
 )
 
 fun Weather.toWeatherDB() = WeatherDB(
-    description = description,icon =  icon,main =  main
+    description = description, icon = icon, main = main
 )

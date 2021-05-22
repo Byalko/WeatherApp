@@ -30,15 +30,15 @@ class TodayViewModel @Inject constructor(
     private var _location = MutableLiveData<LocationDB>()
     val location: LiveData<LocationDB> = _location
 
-    private val _list = MutableStateFlow<AllEvent>(AllEvent.Empty)
-    val list: StateFlow<AllEvent> = _list
+    private val _weather = MutableStateFlow<AllEvent>(AllEvent.Empty)
+    val weather: StateFlow<AllEvent> = _weather
 
     init {
         viewModelScope.launch {
             val localWeather = withContext(Dispatchers.IO) { databaseRepository.getAll() }
             val localLocation = withContext(Dispatchers.IO) { databaseRepository.getLocation() }
             if (localWeather.isNotEmpty() && localLocation.isNotEmpty()) {
-                _list.emit(AllEvent.Success(localWeather))
+                _weather.emit(AllEvent.Success(localWeather))
                 _location.postValue(localLocation[0])
             }
         }
@@ -47,7 +47,7 @@ class TodayViewModel @Inject constructor(
     fun getData(lat: Double, lon: Double) {
 
         viewModelScope.launch {
-            _list.value = AllEvent.Loading
+            _weather.value = AllEvent.Loading
 
             when (val response = weatherRepository.getFiveWeather(lat, lon)) {
                 is Resource.Success -> {
@@ -65,15 +65,15 @@ class TodayViewModel @Inject constructor(
                         val localWeather = withContext(Dispatchers.Default) {
                             inicializeSections(remoteWeather).map { it.toRecyclerViewSectionDB() }
                         }
-                        _list.emit( AllEvent.Success(localWeather) )
+                        _weather.emit( AllEvent.Success(localWeather) )
                         withContext(Dispatchers.IO) { databaseRepository.deleteAll() }
                         withContext(Dispatchers.IO) { databaseRepository.insertAll(localWeather) }
                     } else {
-                        _list.value = AllEvent.Failure("No data")
+                        _weather.value = AllEvent.Failure("No data")
                     }
                 }
                 is Resource.Error -> {
-                    _list.value = AllEvent.Failure(response.message.toString())
+                    _weather.value = AllEvent.Failure(response.message.toString())
                 }
             }
         }

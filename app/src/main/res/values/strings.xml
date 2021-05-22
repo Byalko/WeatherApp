@@ -23,4 +23,5 @@
     Wind speed: %5$d km/h\n
     Wind direction: %6$s
     </string>
+    <string name="description_compass_icon">compass icon</string>
 </resources>
